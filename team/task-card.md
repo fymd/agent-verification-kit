@@ -1,6 +1,7 @@
-# 团队统一任务卡
+# 团队任务卡
 
-主控创建任务、专家交接时使用同一模板。
+- **完整版（推荐，含 Spec/记忆门与失败归档）：** [templates/task-card-full.md](../templates/task-card-full.md)
+- **精简字段**仍可参考下方；进入 Doing 前请用完整版勾选门禁。
 
 ---
 
@@ -32,19 +33,24 @@
 
 ```
 
+### 记忆引用
+- Feature Map：
+- Failure：
+- Playbook：
+
 ### 依赖
 - 
 
-### 相关文档
-- Feature Map：
-- VERIFY.md：
-
-### 交付物（负责人交回）
+### 交付物
 - [ ] 改动说明
 - [ ] 验证输出
 - [ ] 验收标准自检
 
-### 验收结果（Verifier 填）
+### 验收结果（Verifier）
 - 判定：
 - 摘要：
+
+### 防再犯（若曾 FAIL）
+- Record：
+- 已落地：是 / 否
 ```
