@@ -1,6 +1,6 @@
 # agent-verification-kit
 
-面向 **Trae / WorkBuddy** 的 AI 编码 Agent 验证体系。
+面向 **Trae / WorkBuddy** 的 AI 编码 Agent 验证体系与**软件团队多专家编组**。
 
 解决三个常见痛点：
 
@@ -14,93 +14,62 @@
 
 ---
 
+## 软件团队 Agent（主控 + 领域专家）
+
+完整编组见 **[team/](team/)**：
+
+| 角色 | 文件 |
+|------|------|
+| 研发主控 Orchestrator（质量/进度/分派） | [team/orchestrator.md](team/orchestrator.md) |
+| Spec 需求规格 | [team/experts/spec.md](team/experts/spec.md) |
+| Backend 实现 | [team/experts/backend.md](team/experts/backend.md) |
+| Debug 排查 | [team/experts/debug.md](team/experts/debug.md) |
+| Verifier 验收 | [team/experts/verifier.md](team/experts/verifier.md) |
+| WorkBuddy 创建步骤 | [team/workbuddy-setup.md](team/workbuddy-setup.md) |
+
+主控强制：**实现必须经验收才能标完成**；用任务卡与看板管进度。
+
+---
+
 ## 仓库结构
 
 ```
 agent-verification-kit/
-├── README.md
-├── agents/
-│   └── verifier-agent.md                 # Trae Verifier 系统提示词
+├── team/                                 # 软件团队多专家（主控+领域）
+├── agents/verifier-agent.md
 ├── templates/
-│   ├── task-with-boundary.md             # 通用任务模板
-│   └── task-python-go.md                 # Python/Go 后端任务模板
 ├── examples/
-│   ├── feature-map-example.md            # 通用 Feature Map
-│   ├── feature-map-python-api.md         # Python API / 状态机
-│   └── feature-map-go-service.md         # Go worker / 幂等与并发
 ├── skeletons/
-│   ├── FEATURE-fastapi.md                # 可直接放进 FastAPI 仓库的骨架
-│   └── FEATURE-go-internal.md            # Go internal/service 骨架
-├── skills/
-│   └── project-verification-skill.md     # 项目级 Launch→Evidence 验证技能
-└── docs/
-    └── success-cases.md                  # 成功案例与可复用做法
+├── skills/project-verification-skill.md
+└── docs/success-cases.md
 ```
 
 ---
 
-## 快速开始（Trae）
+## 快速开始
 
-### 1. 创建 Verifier Agent
+### WorkBuddy（团队）
 
-把 [`agents/verifier-agent.md`](agents/verifier-agent.md) 贴进自定义 Agent 系统提示词。
+按 [team/workbuddy-setup.md](team/workbuddy-setup.md) 创建 5 个「我的专家」，日常只召唤 **研发主控**。
 
-### 2. 用任务模板下发工作
+### Trae / 单 Agent
 
-- 后端优先：[`templates/task-python-go.md`](templates/task-python-go.md)
-- Builder 完成后必须交 Verifier；你只看 `PASS` / `FAIL` / `BLOCKED` 与证据
-
-### 3. 给易改坏模块写 FEATURE
-
-| 你的项目 | 用这个骨架 |
-|----------|------------|
-| FastAPI 等 Python API | [`skeletons/FEATURE-fastapi.md`](skeletons/FEATURE-fastapi.md) |
-| Go `internal/service` | [`skeletons/FEATURE-go-internal.md`](skeletons/FEATURE-go-internal.md) |
-| 需要完整范例 | [`examples/feature-map-python-api.md`](examples/feature-map-python-api.md) / [`feature-map-go-service.md`](examples/feature-map-go-service.md) |
-
-### 4. 仓库内放一份验证技能
-
-复制 [`skills/project-verification-skill.md`](skills/project-verification-skill.md) 为项目的 `VERIFY.md`，改成真实的 health 与测试命令。任务里写：「按 VERIFY.md 执行并附输出」。
+1. Verifier：[`agents/verifier-agent.md`](agents/verifier-agent.md)
+2. 任务模板：[`templates/task-python-go.md`](templates/task-python-go.md)
+3. FEATURE 骨架：[`skeletons/`](skeletons/)
+4. 项目 VERIFY：[`skills/project-verification-skill.md`](skills/project-verification-skill.md)
 
 ---
 
-## 成功实践如何落到本仓库
-
-| 成功做法 | 本仓库对应 |
-|----------|------------|
-| 验证优先（pstack） | Verifier + project-verification-skill |
-| Feature Map | examples + skeletons |
-| Tests-first / 验收可断言 | task-python-go 验收标准 + 验证命令 |
-| 四层验证 | 静态/单测在验证命令里；Verifier 做评审层；curl/集成作运行态 |
-| 证据包 | Verifier 输出格式；无证据 = BLOCKED |
-| 先信任再并行 | docs/success-cases 中的采用顺序 |
-
-更多说明：[docs/success-cases.md](docs/success-cases.md)
-
----
-
-## Python / Go 特别注意
-
-| 风险点 | 建议 |
-|--------|------|
-| 状态机被放宽 | FEATURE 写死合法迁移 + 测试 |
-| 幂等失效 | 验收项写清「不重复流水/事件」 |
-| 先读后写 | 条件更新；Go 可加 `-race` |
-| 改坏契约 | 「不能破坏」写路径/字段/错误码 |
-| 口头完成 | 无 pytest/go test 输出 → BLOCKED |
-
----
-
-## 推荐工作流
+## 推荐工作流（团队）
 
 ```
-你 → task-python-go + FEATURE 路径 + VERIFY.md
-        ↓
-     Builder
-        ↓
-     Verifier（证据关卡）
-        ↓
-你只处理 FAIL/BLOCKED，或抽查 PASS
+你 → 研发主控
+       → Spec（补验收标准）
+       → Backend / Debug
+       → Verifier（质量闸门）
+       → 主控更新看板
+你只处理决策与高风险放行
 ```
 
 ---
