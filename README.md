@@ -7,16 +7,24 @@
 
 ---
 
-## 你从哪开始
+## 使用指导（先读）
 
-| 你想… | 去读 |
+**[docs/usage-guide.md](docs/usage-guide.md)** — 全局能力 vs 项目记忆、路径对照、接入顺序、完成定义。
+
+| 你想… | 文档 |
 |--------|------|
-| 接到现有业务仓库 | [docs/project-bootstrap.md](docs/project-bootstrap.md) |
+| 统一怎么用 | [docs/usage-guide.md](docs/usage-guide.md) |
+| 接到业务仓库 | [docs/project-bootstrap.md](docs/project-bootstrap.md) |
 | 一次做对 / 防再犯 | [docs/first-time-right.md](docs/first-time-right.md) |
 | WorkBuddy 建专家 | [team/workbuddy-setup.md](team/workbuddy-setup.md) |
-| 软件团队角色提示词 | [team/](team/) |
-| Claude Agent Teams 对照 | [docs/claude-code-agent-teams.md](docs/claude-code-agent-teams.md) |
-| 只做单任务验证 | [agents/verifier-agent.md](agents/verifier-agent.md) + [templates/task-python-go.md](templates/task-python-go.md) |
+| 团队角色提示词 | [team/](team/) |
+| 还要不要继续改 kit | [docs/roadmap.md](docs/roadmap.md) |
+| Claude Agent Teams | [docs/claude-code-agent-teams.md](docs/claude-code-agent-teams.md) |
+
+### 两层记一句
+
+- **全局：** 专家提示词、流程、空模板 → WorkBuddy / 本仓库  
+- **每个业务项目：** `VERIFY.md` + `docs/features|failures|playbooks` → **该项目根目录**  
 
 ---
 
@@ -24,11 +32,11 @@
 
 ```
 你 → 研发主控
-       → Spec 门 + 记忆门（failures / Feature Map / playbooks）
-       → Backend 或 Debug
-       → Verifier（无证据不得 PASS）
-       → FAIL：Failure Record + 防再犯落地后再修
-       → PASS：可选 Playbook；更新看板
+       → Spec 门 + 记忆门
+       → Backend / Debug
+       → Verifier
+       → FAIL：Failure + 防再犯 → 再修
+       → PASS：可选 Playbook
 ```
 
 ---
@@ -36,25 +44,14 @@
 ## 目录速查
 
 ```
-agents/           Verifier 系统提示词
-templates/        任务卡、Failure、Playbook、Python-Go 任务
-examples/         Feature Map / 失败与成功示例
-skeletons/        FastAPI / Go FEATURE 骨架
-skills/           项目 VERIFY 技能模板
-team/             主控 + 领域专家 + WorkBuddy + Claude agents
-docs/             一次做对、bootstrap、Claude teams、成功实践
+agents/      Verifier
+templates/   任务卡、Failure、Playbook、Python-Go 任务
+examples/    Feature / 失败 / 成功示例
+skeletons/   FastAPI、Go FEATURE 骨架
+skills/      VERIFY 技能模板
+team/        主控与领域专家、WorkBuddy、Claude agents
+docs/        使用指导、一次做对、bootstrap、路线图、Claude teams
 ```
-
----
-
-## 质量硬规则（摘要）
-
-1. 无完整验收标准 → 不得实现  
-2. 开干前检索 failures、读 Feature Map  
-3. 实现 ≠ 完成，必须经 Verifier  
-4. FAIL 必须归档并落地防再犯，否则不得关闭  
-5. 同类根因第二次 FAIL → 先改体系再改代码  
-6. 成功可重复流程 → 写入 playbooks  
 
 ---
 
