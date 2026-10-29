@@ -1,54 +1,56 @@
 # 业务仓库接入清单（一次性）
 
-在你的 Python/Go 项目里按本清单落地，之后主要靠流程复利，而不是反复改 Agent 提示词。
+完整说明见 **[usage-guide.md](usage-guide.md)**（全局 vs 项目）。  
+本文只列出：**在你的业务项目根目录**要建的内容和复制来源。
 
-## 1. 目录
+> 这些目录建在 **业务仓库**，不是 `agent-verification-kit`。  
+> 专家提示词与流程模板可全局配置；`VERIFY` / features / failures 必须按项目落地。
+
+## 1. 目录（业务仓库根）
 
 ```text
-docs/
-  features/          # Feature Map（每模块一份）
-  failures/          # Failure Record
-  playbooks/         # Success Playbook
-  agent-board.md     # 可选：当前看板快照
-VERIFY.md            # 项目验证技能（从 kit skills 复制改写）
+<your-app>/
+├── VERIFY.md
+└── docs/
+    ├── features/          # Feature Map
+    ├── failures/          # Failure Record
+    ├── playbooks/         # Success Playbook
+    └── agent-board.md     # 可选
 ```
 
-## 2. 从本 kit 复制什么
+## 2. 从 kit 复制什么
 
-| 来源 | 放到业务仓库 |
-|------|----------------|
+| 来源（本 kit） | 放到业务仓库 |
+|----------------|--------------|
 | `skills/project-verification-skill.md` | `VERIFY.md`（改成真实命令） |
 | `skeletons/FEATURE-*.md` | `docs/features/<模块>.md` |
-| `templates/failure-record.md` | 需要时往 `docs/failures/` 填 |
-| `templates/success-playbook.md` | 需要时往 `docs/playbooks/` 填 |
-| `templates/task-card-full.md` | 主控/人类建卡用 |
-| `examples/failure-*.md` / `playbook-*.md` | 对照，勿原样当生产记录 |
+| `templates/failure-record.md` | 需要时填到 `docs/failures/` |
+| `templates/success-playbook.md` | 需要时填到 `docs/playbooks/` |
+| `templates/task-card-full.md` | 建卡时复制使用 |
+| `examples/*` | 仅对照，勿当本项目正式记录 |
 
-## 3. WorkBuddy
+## 3. 全局（与项目分开）
 
-1. 按 `team/workbuddy-setup.md` 建专家（至少：**研发主控** + **验收专家**）  
-2. 主控提示词用最新 `team/orchestrator.md`  
-3. 验收用 `team/experts/verifier.md`  
+| 全局 | 方式 |
+|------|------|
+| 研发主控 / 验收等专家 | WorkBuddy「我的专家」← `team/*.md` |
+| 一次做对规则 | 主控提示词已含；详见 `docs/first-time-right.md` |
+| 本手册 | 保持 git clone/收藏本仓库即可 |
 
-## 4. Claude Code（可选）
+## 4. WorkBuddy
 
-1. 复制 `team/claude-agents/*.md` → `.claude/agents/`  
-2. 需要并行时再开 Agent teams（见 `docs/claude-code-agent-teams.md`）  
-3. Lead 遵守 `docs/first-time-right.md`  
+1. [team/workbuddy-setup.md](../team/workbuddy-setup.md)  
+2. 主控：`team/orchestrator.md`  
+3. 验收：`team/experts/verifier.md`  
 
-## 5. 第一条真实任务怎么跑
+## 5. 第一条任务
 
-1. 对主控粘贴目标 + 仓库路径  
-2. 主控出完整任务卡（Spec/记忆门打勾）  
-3. Backend/Debug → 证据  
-4. Verifier → PASS/FAIL  
-5. FAIL：写 `docs/failures/...` 并改 Feature Map 后再修  
-6. PASS：重复型工作写 `docs/playbooks/...`  
+1. 告诉主控：业务仓库路径 + 目标  
+2. 完整任务卡（Spec 门 + 记忆门）  
+3. 实现 → Verifier  
+4. FAIL → `docs/failures/` + 防再犯  
+5. PASS → 可重复则 `docs/playbooks/`  
 
-## 6. 完成定义（项目级）
+## 6. 完成定义
 
-- 功能：Verifier PASS  
-- 若曾失败：Failure 防再犯已勾选  
-- 可复用流程：Playbook 已存在或显式「无需」  
-
-达到以上，才视为该任务在体系上关闭，而不仅是代码暂时能跑。
+Verifier PASS；若曾 FAIL 则防再犯已落地；Playbook 已写或明确无需。
